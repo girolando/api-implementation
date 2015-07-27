@@ -1,0 +1,48 @@
+{
+  "name": "andersonef/api-implementation",
+  "description": "Laravel Api Implementation",
+  "keywords": [
+    "laravel",
+    "services",
+    "soa",
+    "api",
+    "eloquent",
+    "database"
+  ],
+  "licence": "MIT",
+  "authors": [
+    {
+      "name": "Anderson Nunes",
+      "email": "anderson.nuneseth@gmail.com"
+    }
+  ],
+  "require": {
+    "php": ">=5.5.0",
+    "illuminate/database":"5.1.*",
+    "illuminate/auth":"5.1.*",
+    "illuminate/support":"5.1.*",
+    "illuminate/console": "5.0.x|5.1.x",
+    "illuminate/filesystem": "5.0.x|5.1.x",
+    "symfony/class-loader": "~2.3",
+    "firebase/php-jwt": "^2.2.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Andersonef\\ApiImplementation\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Andersonef\\Tests\\ApiImplementation\\": "tests/"
+    }
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-master": "1.0-dev"
+    }
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true
+
+
+}
