@@ -5,9 +5,8 @@ namespace Andersonef\ApiImplementation\Http\Controllers;
 use Andersonef\ApiImplementation\Exceptions\ApiAuthException;
 use Illuminate\Auth\Guard;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
 
-use Inet\Http\Requests;
-use Inet\Http\Controllers\Controller;
 
 class ApiLayer extends Controller
 {
