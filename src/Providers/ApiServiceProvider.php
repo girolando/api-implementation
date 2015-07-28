@@ -3,7 +3,7 @@
 namespace Andersonef\ApiImplementation\Providers;
 
 use Andersonef\ApiImplementation\Services\ApiAuthService;
-use Illuminate\Routing\Route;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 
 class ApiServiceProvider extends ServiceProvider
