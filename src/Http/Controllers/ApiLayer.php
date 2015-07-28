@@ -14,7 +14,14 @@ class ApiLayer extends Controller
 
     public function postAuth(Request $request, Guard $guard)
     {
-        if(!$guard->attempt($request->all())) throw new ApiAuthException('Invalid user or password!');
-        return ['UserKey' => md5($guard->user()->codigoPessoa)];
+        $user = app($this->configRepository->get('auth.model'))
+            ->where('loginPessoa','=', $request->get('loginPessoa'))
+            ->where('senhaPessoa','=', md5($request->get('senhaPessoa')))->first();
+
+        if($user) return ['UserKey' => md5($user->codigoPessoa)];
+        if($guard->attempt($request->all())) return ['UserKey' => md5($guard->user()->codigoPessoa)];
+
+        throw new ApiAuthException('Invalid user or password!');
+
     }
 }
