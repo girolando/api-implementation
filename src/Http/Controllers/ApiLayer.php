@@ -20,9 +20,13 @@ class ApiLayer extends Controller
             ->where('senhaPessoa','=', md5($request->get('senhaPessoa')))->first();
 
         if($user) return ['UserKey' => md5($user->codigoPessoa)];
-        if($guard->attempt($request->all())) return ['UserKey' => md5($guard->user()->codigoPessoa)];
+        if($guard->attempt($request->all())) return ['UserKey' => strtoupper(md5($guard->user()->codigoPessoa))];
 
         throw new ApiAuthException('Invalid user or password!');
+    }
 
+    public function getDetails(Guard $guard)
+    {
+        return $guard->user();
     }
 }
