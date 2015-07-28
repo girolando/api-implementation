@@ -70,6 +70,7 @@ class JwtTokenMiddleware
 
                 $user = app($this->configRepository->get('auth.model'));
 
+
                 $user = $user->newQuery()->whereRaw('HASHBYTES(\'md5\', cast('.$user->getKeyName().' as varchar)) = 0x'.$this->header->UserKey)->first();
                 if(!$user) throw new ApiAuthException('Invalid UserKey: '.$this->header->UserKey);
                 $this->guard->onceUsingId($user->getKey());

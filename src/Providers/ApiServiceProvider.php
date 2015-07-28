@@ -32,3 +32,4 @@ class ApiServiceProvider extends ServiceProvider
 
     }
 }
+

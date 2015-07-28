@@ -47,4 +47,5 @@ class ApiAuthService {
         return $appCliente->Servicos->contains($service->id);
     }
 
+
 }
