@@ -22,6 +22,5 @@ class ApiLayer extends Controller
 
         throw new ApiAuthException('Invalid user or password!');
 
-
     }
 }
