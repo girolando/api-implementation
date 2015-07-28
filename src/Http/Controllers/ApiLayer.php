@@ -25,7 +25,7 @@ class ApiLayer extends Controller
         throw new ApiAuthException('Invalid user or password!');
     }
 
-    public function getDetails(Guard $guard)
+    public function getUserDetails(Guard $guard)
     {
         return $guard->user();
     }
