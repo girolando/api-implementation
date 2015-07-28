@@ -56,6 +56,7 @@ class JwtTokenMiddleware
 
             $this->clientApp = $this->clientApp->newQuery()->where('usuarioAppCliente', '=', $header->AppKey)->first();
 
+
             if (!$this->clientApp) throw new InvalidTokenException('Could not find the client application this token works with.');
 
             \JWT::decode($request->get('__token'), $this->clientApp->secretAppCliente, [$header->alg]);
