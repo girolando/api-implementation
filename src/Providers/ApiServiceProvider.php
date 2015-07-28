@@ -3,6 +3,7 @@
 namespace Andersonef\ApiImplementation\Providers;
 
 use Andersonef\ApiImplementation\Services\ApiAuthService;
+use Illuminate\Routing\Route;
 use Illuminate\Support\ServiceProvider;
 
 class ApiServiceProvider extends ServiceProvider
@@ -15,7 +16,7 @@ class ApiServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        Route::controller('/api-layer/auth', \Andersonef\ApiImplementation\Http\Controllers\ApiLayer::class);
     }
 
     /**
