@@ -17,6 +17,7 @@ class ApiServiceProvider extends ServiceProvider
     public function boot()
     {
         Route::controller('/api-layer', \Andersonef\ApiImplementation\Http\Controllers\ApiLayer::class);
+
     }
 
     /**
