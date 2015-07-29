@@ -85,7 +85,8 @@ class JwtTokenMiddleware
             $resp = ['status' => 'failure', 'data' => ['stack' => $e->getTraceAsString()], 'message' => $e->getMessage()];
         }
         if($resp instanceof ApiResponse) return $resp;
-        if($resp instanceof JsonResponse) $resp = $this->handleValidationErrors($resp->getData());
+
+        if($resp instanceof JsonResponse) $resp = ['status' => 'error', 'data' => $this->handleValidationErrors($resp->getData()), 'message' => 'You\'ve got some errors from request validator!'];
         return $this->renderResponse($resp);
         //\JWT::encode(payload, key, alg, keyid, head);
     }
