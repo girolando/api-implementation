@@ -11,6 +11,7 @@ use \Closure;
 use Illuminate\Auth\Guard;
 use Illuminate\Contracts\Config\Repository;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\App;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 class JwtTokenMiddleware
@@ -41,6 +42,9 @@ class JwtTokenMiddleware
 
         $resp = null;
         try {
+            if ($request->headers->has('language'))
+                App::setLocale($request->headers->get('language'));
+
             //die(print_r($request->all()));
             if (!$request->has('__token')) throw new InvalidTokenException('The __token parameter doesn\'t has come inside the request.');
             if (!preg_match('/[A-z0-9]{10,}\.[A-z0-9]{1,}\.[A-z0-9]{10,}/i', $request->get('__token'))) throw new InvalidTokenException('The received token does not appears like a valid JWT token.');
@@ -82,11 +86,11 @@ class JwtTokenMiddleware
             $resp = $next($request);
 
         }catch (\Exception $e){
-            $resp = ['status' => 'failure', 'data' => ['stack' => $e->getTraceAsString()], 'message' => $e->getMessage()];
+            $resp = ['status' => 'error', 'data' => ['stack' => $e->getTraceAsString()], 'message' => $e->getMessage()];
         }
         if($resp instanceof ApiResponse) return $resp;
 
-        if($resp instanceof JsonResponse) $resp = ['status' => 'error', 'data' => $this->handleValidationErrors($resp->getData()), 'message' => 'You\'ve got some errors from request validator!'];
+        if($resp instanceof JsonResponse) $resp = ['status' => ($resp->getStatusCode() == 200) ? 'success' : 'error', 'data' => $this->handleValidationErrors($resp->getData()), 'message' => 'You\'ve got some errors from request validator!'];
         return $this->renderResponse($resp);
         //\JWT::encode(payload, key, alg, keyid, head);
     }
@@ -106,7 +110,7 @@ class JwtTokenMiddleware
         {
             $user = (isset($this->header->AppKey)) ? $this->header->AppKey : 'NONE';
             $senha = 'NONE';
-            $resp = ['status' => 'failure', 'data' => ['exception' => 'Invalid client app signature.']];
+            $resp = ['status' => 'error', 'data' => ['exception' => 'Invalid client app signature.']];
         }
         //se não chegou header:
         if(!$this->header) $this->header = (object) ['AppKey' => 'NONE', 'alg' => 'HS256'];
