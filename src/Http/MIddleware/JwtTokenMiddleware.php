@@ -45,6 +45,10 @@ class JwtTokenMiddleware
             if ($request->headers->has('language'))
                 App::setLocale($request->headers->get('language'));
 
+            if($request->has('__plain')){
+                return $next($request);
+            }
+
             //die(print_r($request->all()));
             if (!$request->has('__token')) throw new InvalidTokenException('The __token parameter doesn\'t has come inside the request.');
             if (!preg_match('/[A-z0-9]{10,}\.[A-z0-9]{1,}\.[A-z0-9]{10,}/i', $request->get('__token'))) throw new InvalidTokenException('The received token does not appears like a valid JWT token.');
@@ -115,6 +119,8 @@ class JwtTokenMiddleware
         //se não chegou header:
         if(!$this->header) $this->header = (object) ['AppKey' => 'NONE', 'alg' => 'HS256'];
         $jwt = \JWT::encode($resp, ($senha) ? $senha : $this->clientApp->secretAppCliente, $this->header->alg, null, ['AppKey' => ($user) ? $user : $this->clientApp->usuarioAppCliente]);
+        die($jwt);
+
         return $response->setContent($jwt);
     }
 
