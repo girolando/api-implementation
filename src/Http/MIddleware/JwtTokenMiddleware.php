@@ -45,8 +45,13 @@ class JwtTokenMiddleware
             if ($request->headers->has('language'))
                 App::setLocale($request->headers->get('language'));
 
-            if($request->has('__plain')){
-                return $next($request);
+
+            if($request->has('__plain') && in_array($request->ip(), ['10.0.2.2', '127.0.0.1'])){
+                try{
+                    return $next($request);
+                }catch(\Exception $e){
+                    return ['status' => 'error', 'message' => $e->getMessage()];
+                }
             }
 
             //die(print_r($request->all()));
