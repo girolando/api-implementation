@@ -13,6 +13,11 @@ use Illuminate\Http\Response;
 
 class ApiResponse extends Response{
 
+    public function __construct($data)
+    {
+        parent::__construct($data, ($data['status'] == 'success') ? 200 : 422);
+    }
+
     public function setContent($content)
     {
         parent::setContent($content);

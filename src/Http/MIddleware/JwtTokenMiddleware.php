@@ -33,7 +33,7 @@ class JwtTokenMiddleware
     /**
      * Handle an incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  //\Illuminate\Http\Request  $request
      * @param  \Closure  $next
      * @return mixed
      */
@@ -44,19 +44,19 @@ class JwtTokenMiddleware
         try {
             if ($request->headers->has('language'))
                 App::setLocale($request->headers->get('language'));
-
-
-            if($request->has('__plain') && in_array($request->ip(), ['10.0.2.2', '127.0.0.1'])){
+            $ip = $request->ip();
+            if($request->has('__plain')){
                 try{
                     return $next($request);
                 }catch(\Exception $e){
-                    return ['status' => 'error', 'message' => $e->getMessage()];
+                    die(print_r(['status' => 'error', 'message' => $e->getMessage(), 'stack' => $e->getTraceAsString()]));
                 }
             }
 
             //die(print_r($request->all()));
             if (!$request->has('__token')) throw new InvalidTokenException('The __token parameter doesn\'t has come inside the request.');
 
+            //if (!preg_match('/[A-z0-9]{10,}\.[A-z0-9]{1,}\.[A-z0-9]{10,}/i', $request->get('__token'))) throw new InvalidTokenException('The received token does not appears like a valid JWT token.');
 
             $header = json_decode(base64_decode(explode('.', $request->get('__token'))[0]));
 
@@ -68,6 +68,7 @@ class JwtTokenMiddleware
             if (!isset($header->AppKey) || !$header->AppKey) throw new InvalidTokenException('No valid AppKey received.');
 
             $this->clientApp = $this->clientApp->newQuery()->where('usuarioAppCliente', '=', $header->AppKey)->first();
+
 
 
             if (!$this->clientApp) throw new InvalidTokenException('Could not find the client application this token works with.');
@@ -108,7 +109,6 @@ class JwtTokenMiddleware
 
     protected function renderResponse($resp)
     {
-        $response = new ApiResponse();
         //$resp = ['payload' => $resp];
         if($resp instanceof Response) $resp = ['status' => 'success', 'data' => $resp->getOriginalContent(), 'message' => ''];
         //if(!($resp instanceof ApiResponse)) $resp = ['success' => true, 'payload' => $resp];
@@ -126,7 +126,7 @@ class JwtTokenMiddleware
         $jwt = \JWT::encode($resp, ($senha) ? $senha : $this->clientApp->secretAppCliente, $this->header->alg, null, ['AppKey' => ($user) ? $user : $this->clientApp->usuarioAppCliente]);
         die($jwt);
 
-        return $response->setContent($jwt);
+        return new ApiResponse($resp);
     }
 
     public function handleValidationErrors($data = array()){
