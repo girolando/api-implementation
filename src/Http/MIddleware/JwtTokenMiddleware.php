@@ -124,9 +124,7 @@ class JwtTokenMiddleware
         //se não chegou header:
         if(!$this->header) $this->header = (object) ['AppKey' => 'NONE', 'alg' => 'HS256'];
         $jwt = \JWT::encode($resp, ($senha) ? $senha : $this->clientApp->secretAppCliente, $this->header->alg, null, ['AppKey' => ($user) ? $user : $this->clientApp->usuarioAppCliente]);
-        die($jwt);
-
-        return new ApiResponse($resp);
+        return new ApiResponse($jwt, ($resp['status'] == 'success') ? 200 : 422);
     }
 
     public function handleValidationErrors($data = array()){
