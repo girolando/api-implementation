@@ -19,6 +19,7 @@ class JwtTokenMiddleware
     protected $clientApp;
     protected $guard;
     protected $header;
+    protected $payload;
     protected $apiService;
     protected $configRepository;
 
@@ -44,7 +45,6 @@ class JwtTokenMiddleware
         try {
             if ($request->headers->has('language'))
                 App::setLocale($request->headers->get('language'));
-            $ip = $request->ip();
             if($request->has('__plain')){
                 try{
                     return $next($request);
@@ -59,17 +59,17 @@ class JwtTokenMiddleware
             //if (!preg_match('/[A-z0-9]{10,}\.[A-z0-9]{1,}\.[A-z0-9]{10,}/i', $request->get('__token'))) throw new InvalidTokenException('The received token does not appears like a valid JWT token.');
 
             $header = json_decode(base64_decode(explode('.', $request->get('__token'))[0]));
-
-            $this->header = $header;
-
             $payload = json_decode(base64_decode(explode('.', $request->get('__token'))[1]));
 
+            $this->header = $header;
+            $this->payload = $payload;
+
             //The token wasn't adultered after being sent from client?
-            if (!isset($header->AppKey) || !$header->AppKey) throw new InvalidTokenException('No valid AppKey received.');
+            //if (!isset($header->AppKey) || !$header->AppKey) throw new InvalidTokenException('No valid AppKey received.');
+            if(isset($header->AppKey))
+                $this->clientApp = $this->clientApp->newQuery()->where('usuarioAppCliente', '=', $header->AppKey)->first();
 
-            $this->clientApp = $this->clientApp->newQuery()->where('usuarioAppCliente', '=', $header->AppKey)->first();
-
-
+            if(!$this->clientApp && isset($payload->AppKey)) $this->clientApp = $this->clientApp->newQuery()->where('usuarioAppCliente', '=', $payload->AppKey)->first();
 
             if (!$this->clientApp) throw new InvalidTokenException('Could not find the client application this token works with.');
 
@@ -115,11 +115,12 @@ class JwtTokenMiddleware
 
         $user = null;
         $senha = null;
+        if(!$this->clientApp || !$this->clientApp->exists) $this->clientApp = $this->clientApp->newQuery()->where('usuarioAppCliente','=',$this->payload->AppKey)->first();
         if(!$this->clientApp || !$this->clientApp->exists)
         {
             $user = (isset($this->header->AppKey)) ? $this->header->AppKey : 'NONE';
             $senha = 'NONE';
-            $resp = ['status' => 'error', 'data' => ['exception' => 'Invalid client app signature.']];
+            $resp = ['status' => 'error', 'data' => ['exception' => 'Invalid client app signature.'.print_r($teste->toArray(), true)]];
         }
         //se não chegou header:
         if(!$this->header) $this->header = (object) ['AppKey' => 'NONE', 'alg' => 'HS256'];
