@@ -96,7 +96,7 @@ class JwtTokenMiddleware
             $resp = $next($request);
 
         }catch (\Exception $e){
-            $resp = ['status' => 'error', 'data' => ['stack' => $e->getTraceAsString()], 'message' => $e->getMessage()];
+            $resp = ['status' => 'error', 'data' => ['stack' => $e->getTraceAsString(), 'exception' => get_class($e)], 'message' => $e->getMessage()];
         }
         if($resp instanceof ApiResponse) return $resp;
 
