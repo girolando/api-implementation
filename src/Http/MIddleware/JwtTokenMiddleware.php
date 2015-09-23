@@ -120,7 +120,7 @@ class JwtTokenMiddleware
         {
             $user = (isset($this->header->AppKey)) ? $this->header->AppKey : 'NONE';
             $senha = 'NONE';
-            $resp = ['status' => 'error', 'data' => ['exception' => 'Invalid client app signature.'.print_r($teste->toArray(), true)]];
+            $resp = ['status' => 'error', 'data' => ['exception' => 'ApiAuthException'], 'message' => 'Invalid client app signature.'];
         }
         //se não chegou header:
         if(!$this->header) $this->header = (object) ['AppKey' => 'NONE', 'alg' => 'HS256'];
