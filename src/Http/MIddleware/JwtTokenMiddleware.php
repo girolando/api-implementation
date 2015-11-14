@@ -100,7 +100,13 @@ class JwtTokenMiddleware
         }
         if($resp instanceof ApiResponse) return $resp;
 
-        if($resp instanceof JsonResponse) $resp = ['status' => ($resp->getStatusCode() == 200) ? 'success' : 'error', 'data' => $this->handleValidationErrors($resp->getData()), 'message' => 'You\'ve got some errors from request validator!'];
+        if($resp instanceof JsonResponse){
+            $resp = [
+                'status' => ($resp->getStatusCode() == 200) ? 'success' : 'error',
+                'data' => $this->handleValidationErrors($resp->getData()),
+                'message' => ($resp->getStatusCode() == 200) ? '' : 'You\'ve got some errors from request validator!'
+            ];
+        }
         return $this->renderResponse($resp);
         //\JWT::encode(payload, key, alg, keyid, head);
     }
@@ -129,6 +135,7 @@ class JwtTokenMiddleware
     }
 
     public function handleValidationErrors($data = array()){
+        if(get_class($data) == 'stdClass') return $data;
         $newData = array();
         foreach ($data as $field) {
             foreach ($field as $error) {
