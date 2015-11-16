@@ -77,7 +77,7 @@ class JwtTokenMiddleware
             \JWT::decode($request->get('__token'), $this->clientApp->secretAppCliente, [$header->alg]);
 
             //se chegou aki é pq ta supimpa, injeta a request e loga o manolo:
-            $request->merge(json_decode(json_encode($payload), true));
+            //$request->merge(json_decode(json_encode($payload), true));
 
             //tem UserKey na header?? se tiver, loga o manolo:
             if(isset($this->header->UserKey))
