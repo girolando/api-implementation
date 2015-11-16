@@ -59,7 +59,8 @@ class JwtTokenMiddleware
             //if (!preg_match('/[A-z0-9]{10,}\.[A-z0-9]{1,}\.[A-z0-9]{10,}/i', $request->get('__token'))) throw new InvalidTokenException('The received token does not appears like a valid JWT token.');
 
             $header = json_decode(base64_decode(explode('.', $request->get('__token'))[0]));
-            $payload = json_decode(base64_decode(explode('.', $request->get('__token'))[1]));
+            //$payload = json_decode(base64_decode(explode('.', $request->get('__token'))[1]));
+            $payload = $request->all();
 
             $this->header = $header;
             $this->payload = $payload;
