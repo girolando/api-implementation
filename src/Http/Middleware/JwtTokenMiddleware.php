@@ -96,6 +96,7 @@ class JwtTokenMiddleware
 
             $resp = $next($request);
 
+
         }catch (\Exception $e){
             $resp = ['status' => 'error', 'data' => ['stack' => $e->getTraceAsString(), 'exception' => get_class($e)],'stack' => $e->getTraceAsString(), 'exception' => get_class($e), 'message' => $e->getMessage()];
         }
@@ -107,6 +108,11 @@ class JwtTokenMiddleware
                 'data' => $this->handleValidationErrors($resp->getData()),
                 'message' => ($resp->getStatusCode() == 200) ? '' : 'You\'ve got some errors from request validator!'
             ];
+        }
+        if($resp instanceof RedirectResponse){
+            $resp = ['status' => 'error', 'data' => $resp->getSession()->all(), 'message' => 'You\'ve got some errors from request validator!'];
+            if($resp->getSession()->get('errors'))
+                $resp = ['status' => 'error', 'data' => $resp->getSession()->get('errors')->getBag('default')->all(), 'message' => 'You\'ve got some errors from request validator!'];
         }
         return $this->renderResponse($resp);
         //\JWT::encode(payload, key, alg, keyid, head);
