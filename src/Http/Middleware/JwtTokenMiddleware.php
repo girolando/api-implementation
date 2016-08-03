@@ -109,10 +109,10 @@ class JwtTokenMiddleware
                 'message' => ($resp->getStatusCode() == 200) ? '' : 'You\'ve got some errors from request validator!'
             ];
         }
-        if($resp instanceof RedirectResponse && $resp->getSession()->get('errors'))
+        if($resp instanceof \Illuminate\Http\RedirectResponse && $resp->getSession()->get('errors'))
             $resp = ['status' => 'error', 'data' => $resp->getSession()->get('errors')->getBag('default')->all(), 'message' => 'You\'ve got some errors from request validator!'];
 
-        if($resp instanceof RedirectResponse)
+        if($resp instanceof \Illuminate\Http\RedirectResponse)
             $resp = ['status' => 'error', 'data' => $resp->getSession()->all(), 'message' => 'You\'ve got some errors from request validator!'];
 
         return $this->renderResponse($resp);
