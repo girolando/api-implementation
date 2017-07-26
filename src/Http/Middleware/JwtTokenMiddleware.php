@@ -45,7 +45,12 @@ class JwtTokenMiddleware
         try {
             if ($request->headers->has('language'))
                 App::setLocale($request->headers->get('language'));
-            if($request->has('__plain')){
+
+            $canSkip = false;
+            if($request->has('__plain') || $request->get('response_type') == 'code' || $request->get('token_type') == 'Bearer')
+                $canSkip = true;
+
+            if($canSkip){
                 try{
                     return $next($request);
                 }catch(\Exception $e){
