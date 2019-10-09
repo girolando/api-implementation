@@ -1,5 +1,5 @@
 {
-  "name": "andersonef/api-implementation",
+  "name": "girolando/api-implementation",
   "description": "Laravel Api Implementation",
   "keywords": [
     "laravel",
@@ -29,12 +29,12 @@
   },
   "autoload": {
     "psr-4": {
-      "Andersonef\\ApiImplementation\\": "src/"
+      "Girolando\\ApiImplementation\\": "src/"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "Andersonef\\Tests\\ApiImplementation\\": "tests/"
+      "Girolando\\Tests\\ApiImplementation\\": "tests/"
     }
   },
   "extra": {
